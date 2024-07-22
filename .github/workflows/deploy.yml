@@ -35,9 +35,7 @@ jobs:
         working-directory: pyhealpy
         run: |
           pyodide build
-          mv /home/runner/work/testingautomation/testingautomation/pyhealpy/dist/ content/
-          cd content/
-          pip install healpy-0.1.dev1+g90637d3-py3-none-any.whl
+          
       - name: Build the JupyterLite site
         run: |
           cp README.md content
