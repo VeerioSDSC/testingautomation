@@ -35,7 +35,7 @@ jobs:
         working-directory: pyhealpy
         run: |
           pyodide build
-          mv pyhealpy/dist/*.whl /content
+    
       - name: Build the JupyterLite site
         run: |
           cp README.md content
