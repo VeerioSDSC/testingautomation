@@ -20,7 +20,22 @@ jobs:
           python-version: '3.11'
       - name: Install the dependencies
         run: |
+          pip install pyodide-build
           python -m pip install -r requirements.txt
+      - name: Setup emsdk
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 3.1.46
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: healpy/pyhealpy
+          path: pyhealpy
+      - name: Build wheel
+        working-directory: pyhealpy
+        run: |
+          pyodide build
+          mv pyhealpy/dist/*.whl /content
       - name: Build the JupyterLite site
         run: |
           cp README.md content
