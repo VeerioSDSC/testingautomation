@@ -41,6 +41,9 @@ jobs:
         run: |
           cp README.md content
           jupyter lite build --contents content --contents URLs.txt --contents testing.ipynb  --output-dir dist
+          python -m jupyter nbextension install autorun.js --user
+          python -m jupyter nbextension enable autorun --user
+          jupyter notebook testing.ipynb
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
