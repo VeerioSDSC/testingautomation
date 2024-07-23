@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    name: Create A File + Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,35 +19,32 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - uses: actions/checkout@v2
+      - uses: 1arp/create-a-file-action@0.4.5
+        with:
+          path: '/'
+          isAbsolutePath: false
+          file: 'testing.ipynb'
+          content: |
+            {"metadata":{"kernelspec":{"name":"python","display_name":"Python (Pyodide)","language":"python"},"language_info":{"codemirror_mode":{"name":"python","version":3},"file_extension":".py","mimetype":"text/x-python","name":"python","nbconvert_exporter":"python","pygments_lexer":"ipython3","version":"3.8"}},"nbformat_minor":5,"nbformat":4,"cells":[{"id":"3a8c9bfa","cell_type":"code","source":"import micropip\nfile1 = open('URLs.txt', 'r')\nURLs = file1.readlines()\nfor URL in URLs:\n  await micropip.install(URL)","metadata":{"trusted":true},"outputs":[],"execution_count":2},{"id":"d43a48a5-4d8c-48c6-859d-7dc56ce5a9a3","cell_type":"code","source":"","metadata":{"trusted":true},"outputs":[],"execution_count":null},{"id":"ab9770fa-a30f-4268-bf80-52b0e1a9981b","cell_type":"code","source":"","metadata":{"trusted":true},"outputs":[],"execution_count":null}]}
+      - name: printworkingdirectory
+        run:  |
+          pwd
+          ls
       - name: Install the dependencies
         run: |
+          pwd
+          ls
           pip install pyodide-build
           python -m pip install -r requirements.txt
-      - name: Setup emsdk
-        uses: mymindstorm/setup-emsdk@v14
-        with:
-          version: 3.1.46
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          repository: healpy/pyhealpy
-          path: pyhealpy
-      - name: Build wheel
-        working-directory: pyhealpy
-        run: |
-          pyodide build
-          mv /home/runner/work/testingautomation/testingautomation/pyhealpy/dist/ content/
-          cd content/
-          pip install healpy-0.1.dev1+g90637d3-py3-none-any.whl
       - name: Build the JupyterLite site
         run: |
           cp README.md content
-          jupyter lite build --contents content --output-dir dist
+          jupyter lite build --contents content --contents URLs.txt --contents testing.ipynb  --output-dir dist
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
-
   deploy:
     needs: build
     if: github.ref == 'refs/heads/main'
